@@ -264,7 +264,28 @@
     transition: all 0.5s ease;
 }
 
-/* Khi màn hình nhỏ hơn hoặc bằng 768px (tablet, mobile) */
+.github-corner:hover .octo-arm {
+    animation: octocat-wave 560ms ease-in-out;
+}
+
+@keyframes octocat-wave {
+
+    0%,
+    100% {
+        transform: rotate(0);
+    }
+
+    20%,
+    60% {
+        transform: rotate(-25deg);
+    }
+
+    40%,
+    80% {
+        transform: rotate(10deg);
+    }
+}
+
 @media screen and (max-width: 768px) {
     .title h1 {
         font-size: 100px;
@@ -275,7 +296,6 @@
     }
 }
 
-/* Khi màn hình nhỏ hơn hoặc bằng 480px (điện thoại nhỏ) */
 @media screen and (max-width: 480px) {
     .title h1 {
         font-size: 55px;
