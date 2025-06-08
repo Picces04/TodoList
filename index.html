@@ -1,0 +1,260 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css" />
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link href="https://fonts.googleapis.com/css2?family=Work+Sans:ital,wght@0,100..900;1,100..900&display=swap"
+        rel="stylesheet" />
+    <title>JUST DO IT</title>
+    <link rel="stylesheet" href="/Todolist/style.css" />
+</head>
+
+<body>
+    <div class="container standard">
+        <div class="demo version-section">
+            <a href="#" class="github-corner">
+                <svg width="80" height="80" viewBox="0 0 250 250" style="
+              fill: #151513;
+              color: #fff;
+              position: absolute;
+              top: 0;
+              border: 0;
+              left: 0;
+              transform: scale(-1, 1);
+            ">
+                    <path d="M0,0 L115,115 L130,115 L142,142 L250,250 L250,0 Z"></path>
+                    <path
+                        d="M128.3,109.0 C113.8,99.7 119.0,89.6 119.0,89.6 C122.0,82.7 120.5,78.6 120.5,78.6 C119.2,72.0 123.4,76.3 123.4,76.3 C127.3,80.9 125.5,87.3 125.5,87.3 C122.9,97.6 130.6,101.9 134.4,103.2"
+                        fill="currentColor" style="transform-origin: 130px 106px" class="octo-arm"></path>
+                    <path
+                        d="M115.0,115.0 C114.9,115.1 118.7,116.5 119.8,115.4 L133.7,101.6 C136.9,99.2 139.9,98.4 142.2,98.6 C133.8,88.0 127.5,74.4 143.8,58.0 C148.5,53.4 154.0,51.2 159.7,51.0 C160.3,49.4 163.2,43.6 171.4,40.1 C171.4,40.1 176.1,42.5 178.8,56.2 C183.1,58.6 187.2,61.8 190.9,65.4 C194.5,69.0 197.7,73.2 200.1,77.6 C213.8,80.2 216.3,84.9 216.3,84.9 C212.7,93.1 206.9,96.0 205.4,96.6 C205.1,102.4 203.0,107.8 198.3,112.5 C181.9,128.9 168.3,122.5 157.7,114.1 C157.9,116.9 156.7,120.9 152.7,124.9 L141.0,136.5 C139.8,137.7 141.6,141.9 141.8,141.8 Z"
+                        fill="currentColor" class="octo-body"></path>
+                </svg>
+            </a>
+        </div>
+        <div class="header">
+            <div class="theme">
+                <div class="standard-theme theme-selector"></div>
+                <div class="light-theme theme-selector"></div>
+                <div class="darker-theme theme-selector"></div>
+            </div>
+            <div class="title">
+                <h1 id="typing-text"></h1>
+            </div>
+        </div>
+        <div class="form">
+            <form action="" class="todo-form">
+                <input type="text" class="todo-input standard-input" placeholder="Ask a task." />
+                <button class="todo-btn standard-button">I Got This!</button>
+            </form>
+        </div>
+        <div class="real-time">
+            <p>
+                <span id="datetime"></span>
+            </p>
+        </div>
+        <script>
+            function updateDateTime() {
+                const now = new Date();
+                const hours = now.getHours().toString().padStart(2, "0");
+                const minutes = now.getMinutes().toString().padStart(2, "0");
+                const seconds = now.getSeconds().toString().padStart(2, "0");
+                const day = now.getDate().toString();
+                const month = (now.getMonth() + 1).toString();
+                const year = now.getFullYear();
+
+                const formattedDateTime = `${hours}:${minutes}:${seconds} - ${day}/${month}/${year}`;
+                document.getElementById("datetime").textContent = formattedDateTime;
+            }
+
+            //setInterval(updateDateTime, 1000);
+
+            updateDateTime();
+        </script>
+        <div class="task">
+            <ul class="todo-list">
+                <script>
+                    const todoForm = document.querySelector(".todo-form");
+                    const todoList = document.querySelector(".todo-list");
+                    const inputField = document.querySelector(".standard-input");
+                    const checkButtons = document.querySelectorAll(".check-btn");
+                    const deleteButtons = document.querySelectorAll(".delete-btn");
+                    const themeSelectors = document.querySelectorAll(".theme-selector");
+                    const themes = ["standard-theme", "light-theme", "darker-theme"];
+                    const container = document.querySelector(".container");
+                    const todoInput = document.querySelectorAll(".todo-input");
+                    const todoBtn = document.querySelector(".todo-btn");
+                    const todoItems = document.querySelectorAll(".todo");
+
+                    document.addEventListener("DOMContentLoaded", loadTodos);
+
+                    todoForm.addEventListener("submit", function (event) {
+                        event.preventDefault();
+                        const todoText = inputField.value.trim();
+
+                        if (todoText !== "") {
+                            const todoItem = createTodoElement(todoText);
+                            todoList.appendChild(todoItem);
+                            saveTodoToLocal(todoText);
+                            inputField.value = "";
+                        } else {
+                            alert("Please enter a task.");
+                        }
+                    });
+
+                    function createTodoElement(text) {
+                        const todoItem = document.createElement("div");
+                        todoItem.classList.add("todo");
+
+                        // Xác định theme hiện tại
+                        let currentTheme = "standard"; // mặc định
+                        if (container.classList.contains("light")) {
+                            currentTheme = "light";
+                        } else if (container.classList.contains("darker")) {
+                            currentTheme = "darker";
+                        }
+
+                        // Thêm class theo theme
+                        todoItem.classList.add(`${currentTheme}-todo`);
+
+                        todoItem.innerHTML = `
+                            <li class="todo-item">${text}</li>
+                            <button class="check-btn ${currentTheme}-button">
+                                <i class="fas fa-check"></i>
+                            </button>
+                            <button class="delete-btn ${currentTheme}-button">
+                                <i class="fas fa-trash"></i>
+                            </button>
+                        `;
+                        return todoItem;
+                    }
+
+
+                    function saveTodoToLocal(todo) {
+                        let todos = JSON.parse(localStorage.getItem("todos")) || [];
+                        todos.push(todo);
+                        localStorage.setItem("todos", JSON.stringify(todos));
+                    }
+
+                    function loadTodos() {
+                        let todos = JSON.parse(localStorage.getItem("todos")) || [];
+                        todos.forEach(function (todoText) {
+                            const todoItem = createTodoElement(todoText);
+                            todoList.appendChild(todoItem);
+                        });
+                    }
+
+                    todoList.addEventListener("click", function (event) {
+                        const target = event.target;
+                        const todoItem = target.closest(".todo");
+                        if (!todoItem) return;
+
+                        if (target.classList.contains("fa-trash") || target.classList.contains("delete-btn")) {
+                            const todoText = todoItem.querySelector(".todo-item").textContent;
+
+                            // Thêm hiệu ứng rơi
+                            todoItem.classList.add("fall");
+
+                            // Chờ hiệu ứng xong rồi mới xóa (sau 500ms)
+                            setTimeout(() => {
+                                todoItem.remove();
+                                removeTodoFromLocal(todoText);
+                            }, 500);
+                        }
+
+                        if (target.classList.contains("fa-check") || target.classList.contains("check-btn")) {
+                            todoItem.classList.toggle("completed");
+                        }
+                    });
+
+                    function removeTodoFromLocal(todoText) {
+                        let todos = JSON.parse(localStorage.getItem("todos")) || [];
+                        todos = todos.filter((todo) => todo !== todoText);
+                        localStorage.setItem("todos", JSON.stringify(todos));
+                    }
+
+                    themeSelectors.forEach((selector) => {
+                        selector.addEventListener("click", () => {
+                            // Xóa class cũ
+                            container.classList.remove("standard", "light", "darker");
+                            todoBtn.classList.remove("standard-button", "light-button", "darker-button");
+
+                            todoInput.forEach((input) => {
+                                input.classList.remove("standard-input", "light-input", "darker-input");
+                            });
+
+                            // Lấy lại các button và todo mới nhất
+                            const checkButtons = document.querySelectorAll(".check-btn");
+                            const deleteButtons = document.querySelectorAll(".delete-btn");
+                            const todoItems = document.querySelectorAll(".todo");
+
+                            checkButtons.forEach((btn) => {
+                                btn.classList.remove("standard-button", "light-button", "darker-button");
+                            });
+
+                            deleteButtons.forEach((btn) => {
+                                btn.classList.remove("standard-button", "light-button", "darker-button");
+                            });
+
+                            todoItems.forEach((item) => {
+                                item.classList.remove("standard-todo", "light-todo", "darker-todo");
+                            });
+
+                            // Gán class mới
+                            if (selector.classList.contains("standard-theme")) {
+                                container.classList.add("standard");
+                                todoBtn.classList.add("standard-button");
+                                todoInput.forEach((input) => input.classList.add("standard-input"));
+                                checkButtons.forEach((btn) => btn.classList.add("standard-button"));
+                                deleteButtons.forEach((btn) => btn.classList.add("standard-button"));
+                                todoItems.forEach((item) => item.classList.add("standard-todo"));
+
+                            } else if (selector.classList.contains("light-theme")) {
+                                container.classList.add("light");
+                                todoBtn.classList.add("light-button");
+                                todoInput.forEach((input) => input.classList.add("light-input"));
+                                checkButtons.forEach((btn) => btn.classList.add("light-button"));
+                                deleteButtons.forEach((btn) => btn.classList.add("light-button"));
+                                todoItems.forEach((item) => item.classList.add("light-todo"));
+
+                            } else if (selector.classList.contains("darker-theme")) {
+                                container.classList.add("darker");
+                                todoBtn.classList.add("darker-button");
+                                todoInput.forEach((input) => input.classList.add("darker-input"));
+                                checkButtons.forEach((btn) => btn.classList.add("darker-button"));
+                                deleteButtons.forEach((btn) => btn.classList.add("darker-button"));
+                                todoItems.forEach((item) => item.classList.add("darker-todo"));
+                            }
+                        });
+                    });
+
+                </script>
+            </ul>
+        </div>
+    </div>
+</body>
+<script>
+    const text = "Just do it.";
+    const typingElement = document.getElementById("typing-text");
+    let index = 0;
+
+    function typeText() {
+        if (index < text.length) {
+            typingElement.textContent += text.charAt(index);
+            index++;
+            setTimeout(typeText, 150);
+        }
+    }
+
+    document.addEventListener("DOMContentLoaded", typeText);
+</script>
+
+
+
+
+
+</html>
