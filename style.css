@@ -202,9 +202,13 @@
     align-items: center;
     margin: 20px 0;
 }
-.task{
-    
+#datetime{
+    margin-right: 30px;
 }
+#delete-all-wrapper{
+    display: none;
+}
+
 .todo{
     display: flex;
     width: fit-content;
@@ -221,7 +225,11 @@
     line-height: 38px;
     font-size: 20px;
 }
-.todo button{
+.delete-task{
+    margin-left: 5px;
+}
+
+.todo button, .delete-btn{
     width: 38px;
     height: 38px;
     border-radius: 99px;
